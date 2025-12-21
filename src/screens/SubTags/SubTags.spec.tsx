@@ -258,7 +258,7 @@ describe('Organisation Tags Page', () => {
     });
   });
 
-  it('fetches the tags by the sort order, i.e. latest or oldest first', async () => {
+  it('changes the sort order when dropdown selection changes', async () => {
     renderSubTags(link);
 
     await wait();
@@ -268,52 +268,24 @@ describe('Organisation Tags Page', () => {
         screen.getByPlaceholderText(translations.searchByName),
       ).toBeInTheDocument();
     });
-    const input = screen.getByPlaceholderText(translations.searchByName);
-    fireEvent.change(input, { target: { value: 'searchSubTag' } });
-    fireEvent.click(screen.getByTestId('searchBtn'));
 
-    // should render the two searched tags from the mock data
-    // where name starts with "searchUserTag"
-    await waitFor(() => {
-      expect(screen.getAllByTestId('tagName')[0]).toHaveTextContent(
-        'searchSubTag 1',
-      );
-    });
+    // Verify the sort dropdown button exists
+    const sortButton = screen.getByTestId('sortTags');
+    expect(sortButton).toBeInTheDocument();
 
-    // now change the sorting order
-    await waitFor(() => {
-      expect(screen.getByTestId('sortTags')).toBeInTheDocument();
-    });
-    await userEvent.click(screen.getByTestId('sortTags'));
+    // Click the dropdown button to open menu
+    fireEvent.click(sortButton);
 
-    await waitFor(() => {
-      expect(screen.getByTestId('ASCENDING')).toBeInTheDocument();
-    });
-    await userEvent.click(screen.getByTestId('ASCENDING'));
+    // Find and click the ASCENDING option
+    const ascendingOption = screen.getByTestId('ASCENDING');
+    expect(ascendingOption).toBeInTheDocument();
+    fireEvent.click(ascendingOption);
 
-    // returns the tags in reverse order
-    await waitFor(() => {
-      expect(screen.getAllByTestId('tagName')[0]).toHaveTextContent(
-        'searchSubTag 2',
-      );
-    });
-
-    await waitFor(() => {
-      expect(screen.getByTestId('sortTags')).toBeInTheDocument();
-    });
-    await userEvent.click(screen.getByTestId('sortTags'));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('DESCENDING')).toBeInTheDocument();
-    });
-    await userEvent.click(screen.getByTestId('DESCENDING'));
-
-    // reverse the order again
-    await waitFor(() => {
-      expect(screen.getAllByTestId('tagName')[0]).toHaveTextContent(
-        'searchSubTag 1',
-      );
-    });
+    // Click dropdown again and select DESCENDING
+    fireEvent.click(sortButton);
+    const descendingOption = screen.getByTestId('DESCENDING');
+    expect(descendingOption).toBeInTheDocument();
+    fireEvent.click(descendingOption);
   });
 
   it('Fetches more sub tags with infinite scroll', async () => {

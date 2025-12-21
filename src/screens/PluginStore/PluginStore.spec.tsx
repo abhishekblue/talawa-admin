@@ -1,11 +1,4 @@
-import React from 'react';
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  within,
-} from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { ApolloError } from '@apollo/client';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
@@ -171,8 +164,8 @@ describe('PluginStore', () => {
       renderPluginStore();
 
       expect(screen.getByTestId('plugin-store-page')).toBeInTheDocument();
-      expect(screen.getByTestId('plugin-store-searchbar')).toBeInTheDocument();
-      expect(screen.getByTestId('plugin-store-filters')).toBeInTheDocument();
+      expect(screen.getByTestId('searchPlugins')).toBeInTheDocument();
+      expect(screen.getByTestId('filterPlugins')).toBeInTheDocument();
       expect(screen.getByTestId('plugin-list-container')).toBeInTheDocument();
     });
 
@@ -254,13 +247,9 @@ describe('PluginStore', () => {
 
       renderPluginStore();
 
-      const filterDropdown = screen.getByTestId('filterPlugins');
-      await userEvent.click(filterDropdown);
-      // Wait for dropdown options to render
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Find the dropdown option for installed plugins by data-testid in document.body
-      const installedOption = within(document.body).getByTestId('installed');
+      const filterButton = screen.getByTestId('filterPlugins');
+      fireEvent.click(filterButton);
+      const installedOption = screen.getByTestId('installed');
       fireEvent.click(installedOption);
 
       await waitFor(() => {
@@ -491,19 +480,17 @@ describe('PluginStore', () => {
 
       renderPluginStore();
 
-      const filterDropdown = screen.getByTestId('filterPlugins');
-      await userEvent.click(filterDropdown);
-      // Wait for dropdown options to render
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      const filterButton = screen.getByTestId('filterPlugins');
+      fireEvent.click(filterButton);
+      const installedOption = screen.getByTestId('installed');
+      fireEvent.click(installedOption);
 
-      // Find the dropdown option for installed plugins by data-testid in document.body
-      const installedOption = within(document.body).getByTestId('installed');
-      await userEvent.click(installedOption);
-
-      expect(screen.getByTestId('plugin-list-empty')).toBeInTheDocument();
-      expect(
-        screen.getByText((content) => content.includes('noInstalledPlugins')),
-      ).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByTestId('plugin-list-empty')).toBeInTheDocument();
+        expect(
+          screen.getByText((content) => content.includes('noInstalledPlugins')),
+        ).toBeInTheDocument();
+      });
     });
   });
 
@@ -1090,16 +1077,11 @@ describe('PluginStore', () => {
 
       renderPluginStore();
 
-      // Open filter dropdown
-      const filterDropdown = screen.getByTestId('filterPlugins');
-      await userEvent.click(filterDropdown);
-
-      // Wait for dropdown options to render
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Select the 'installed' filter option by its data-testid in document.body
-      const installedOption = within(document.body).getByTestId('installed');
-      await userEvent.click(installedOption);
+      // Change filter dropdown
+      const filterButton = screen.getByTestId('filterPlugins');
+      fireEvent.click(filterButton);
+      const installedOption = screen.getByTestId('installed');
+      fireEvent.click(installedOption);
 
       // Page should be reset to 0 when filter changes. Verify first-page items are rendered
       await waitFor(() => {

@@ -60,7 +60,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import styles from '../../style/app-fixed.module.css';
 import useLocalStorage from 'utils/useLocalstorage';
 import { useParams } from 'react-router';
-import SearchBar from 'subComponents/SearchBar';
+import AdminSearchFilterBar from 'components/AdminSearchFilterBar/AdminSearchFilterBar';
 import {
   Paper,
   TableBody,
@@ -271,22 +271,15 @@ const Requests = (): JSX.Element => {
   ];
 
   return (
-    <>
-      {/* Buttons Container */}
-      <div
-        className={`${styles.btnsContainer} gap-4 flex-wrap`}
-        data-testid="testComp"
-      >
-        <div className={`${styles.input}`}>
-          <SearchBar
-            placeholder={t('searchRequests')}
-            onSearch={handleSearch}
-            inputTestId="searchByName"
-            buttonTestId="searchButton"
-            className=""
-          />
-        </div>
-      </div>
+    <div data-testid="testComp">
+      <AdminSearchFilterBar
+        searchPlaceholder={t('searchRequests')}
+        searchValue={searchByName}
+        onSearchChange={handleSearch}
+        searchInputTestId="searchByName"
+        searchButtonTestId="searchButton"
+        hasDropdowns={false}
+      />
 
       {!isLoading && orgsData?.organizations?.length === 0 ? (
         <div className={styles.notFound}>
@@ -372,7 +365,7 @@ const Requests = (): JSX.Element => {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 };
 

@@ -137,24 +137,21 @@ describe('Testing Leaderboard Screen', () => {
       expect(screen.getByTestId('searchBy')).toBeInTheDocument();
     });
 
-    const sortBtn = await screen.findByTestId('sort');
-    expect(sortBtn).toBeInTheDocument();
+    const sortButton = await screen.findByTestId('sort');
+    expect(sortButton).toBeInTheDocument();
 
-    // Sort by hours_DESC
-    fireEvent.click(sortBtn);
-    const hoursDesc = await screen.findByTestId('hours_DESC');
-    expect(hoursDesc).toBeInTheDocument();
-    fireEvent.click(hoursDesc);
+    // Click dropdown and sort by hours_DESC
+    fireEvent.click(sortButton);
+    const descOption = await screen.findByTestId('hours_DESC');
+    fireEvent.click(descOption);
 
     let userName = await screen.findAllByTestId('userName');
     expect(userName[0]).toHaveTextContent('Teresa Bradley');
 
-    // Sort by hours_ASC
-    expect(sortBtn).toBeInTheDocument();
-    fireEvent.click(sortBtn);
-    const hoursAsc = await screen.findByTestId('hours_ASC');
-    expect(hoursAsc).toBeInTheDocument();
-    fireEvent.click(hoursAsc);
+    // Click dropdown and sort by hours_ASC
+    fireEvent.click(sortButton);
+    const ascOption = await screen.findByTestId('hours_ASC');
+    fireEvent.click(ascOption);
 
     userName = await screen.findAllByTestId('userName');
     expect(userName[0]).toHaveTextContent('Jane Doe');
@@ -169,14 +166,13 @@ describe('Testing Leaderboard Screen', () => {
     });
 
     // Filter by allTime
-    const filter = await screen.findByTestId('timeFrame');
-    expect(filter).toBeInTheDocument();
+    const timeFrameButton = await screen.findByTestId('timeFrame');
+    expect(timeFrameButton).toBeInTheDocument();
 
-    fireEvent.click(filter);
-    const timeFrameAll = await screen.findByTestId('allTime');
-    expect(timeFrameAll).toBeInTheDocument();
+    fireEvent.click(timeFrameButton);
+    const allTimeOption = await screen.findByTestId('allTime');
+    fireEvent.click(allTimeOption);
 
-    fireEvent.click(timeFrameAll);
     const userName = await screen.findAllByTestId('userName');
     expect(userName).toHaveLength(4);
   });
@@ -189,16 +185,13 @@ describe('Testing Leaderboard Screen', () => {
       expect(screen.getByTestId('searchBy')).toBeInTheDocument();
     });
 
-    const filter = await screen.findByTestId('timeFrame');
-    expect(filter).toBeInTheDocument();
+    const timeFrameButton = await screen.findByTestId('timeFrame');
+    expect(timeFrameButton).toBeInTheDocument();
 
     // Filter by weekly
-    expect(filter).toBeInTheDocument();
-    fireEvent.click(filter);
-
-    const timeFrameWeekly = await screen.findByTestId('weekly');
-    expect(timeFrameWeekly).toBeInTheDocument();
-    fireEvent.click(timeFrameWeekly);
+    fireEvent.click(timeFrameButton);
+    const weeklyOption = await screen.findByTestId('weekly');
+    fireEvent.click(weeklyOption);
 
     const userName = await screen.findAllByTestId('userName');
     expect(userName).toHaveLength(1);
@@ -213,13 +206,11 @@ describe('Testing Leaderboard Screen', () => {
     });
 
     // Filter by monthly
-    const filter = await screen.findByTestId('timeFrame');
-    expect(filter).toBeInTheDocument();
-    fireEvent.click(filter);
-
-    const timeFrameMonthly = await screen.findByTestId('monthly');
-    expect(timeFrameMonthly).toBeInTheDocument();
-    fireEvent.click(timeFrameMonthly);
+    const timeFrameButton = await screen.findByTestId('timeFrame');
+    expect(timeFrameButton).toBeInTheDocument();
+    fireEvent.click(timeFrameButton);
+    const monthlyOption = await screen.findByTestId('monthly');
+    fireEvent.click(monthlyOption);
 
     const userName = await screen.findAllByTestId('userName');
     expect(userName).toHaveLength(2);
@@ -234,13 +225,11 @@ describe('Testing Leaderboard Screen', () => {
     });
 
     // Filter by yearly
-    const filter = await screen.findByTestId('timeFrame');
-    expect(filter).toBeInTheDocument();
-    fireEvent.click(filter);
-
-    const timeFrameYearly = await screen.findByTestId('yearly');
-    expect(timeFrameYearly).toBeInTheDocument();
-    fireEvent.click(timeFrameYearly);
+    const timeFrameButton = await screen.findByTestId('timeFrame');
+    expect(timeFrameButton).toBeInTheDocument();
+    fireEvent.click(timeFrameButton);
+    const yearlyOption = await screen.findByTestId('yearly');
+    fireEvent.click(yearlyOption);
 
     const userName = await screen.findAllByTestId('userName');
     expect(userName).toHaveLength(3);

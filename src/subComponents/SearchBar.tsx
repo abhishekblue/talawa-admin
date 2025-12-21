@@ -17,6 +17,8 @@ interface InterfaceSearchBarProps {
   inputTestId?: string;
   /** Custom data-testid for the search button */
   buttonTestId?: string;
+  /** Optional controlled value for the search input */
+  value?: string;
 }
 
 /**
@@ -30,18 +32,23 @@ const SearchBar: React.FC<InterfaceSearchBarProps> = ({
   placeholder,
   onSearch,
   onChange,
-  className = styles.input, // Default className
+  className = styles.input,
   inputTestId,
   buttonTestId,
+  value,
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [internalSearchTerm, setInternalSearchTerm] = useState('');
+
+  const isControlled = value !== undefined;
+  const searchTerm = isControlled ? value : internalSearchTerm;
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value;
-    setSearchTerm(value);
-    // Call onChange for automatic search if provided
+    const newValue = event.target.value;
+    if (!isControlled) {
+      setInternalSearchTerm(newValue);
+    }
     if (onChange) {
-      onChange(value);
+      onChange(newValue);
     }
   };
 

@@ -69,8 +69,7 @@ import { CREATE_USER_TAG } from 'GraphQl/Mutations/TagMutations';
 import { USER_TAG_SUB_TAGS } from 'GraphQl/Queries/userTagQueries';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import InfiniteScrollLoader from 'components/InfiniteScrollLoader/InfiniteScrollLoader';
-import SortingButton from 'subComponents/SortingButton';
-import SearchBar from 'subComponents/SearchBar';
+import AdminSearchFilterBar from 'components/AdminSearchFilterBar/AdminSearchFilterBar';
 
 function SubTags(): JSX.Element {
   const { t } = useTranslation('translation', {
@@ -202,6 +201,40 @@ function SubTags(): JSX.Element {
     navigate(`/orgtags/${orgId}/subTags/${tagId}`);
   };
 
+  const sortDropdownConfig = {
+    label: tCommon('sort'),
+    type: 'sort' as const,
+    options: [
+      { label: tCommon('Latest'), value: 'DESCENDING' },
+      { label: tCommon('Oldest'), value: 'ASCENDING' },
+    ],
+    selectedOption: tagSortOrder,
+    onOptionChange: (value: string) => setTagSortOrder(value as SortedByType),
+    dataTestIdPrefix: 'sortTags',
+  };
+
+  const additionalActionButtons = (
+    <>
+      <Button
+        onClick={() => redirectToManageTag(parentTagId as string)}
+        data-testid="manageCurrentTagBtn"
+        className={`${styles.createButton} mb-3`}
+      >
+        {`${t('manageTag')} ${subTagsData?.getChildTags.name}`}
+      </Button>
+
+      <Button
+        variant="success"
+        onClick={showAddSubTagModal}
+        data-testid="addSubTagBtn"
+        className={`${styles.createButton} mb-3`}
+      >
+        <i className={'fa fa-plus me-2'} />
+        {t('addChildTag')}
+      </Button>
+    </>
+  );
+
   const columns: GridColDef[] = [
     {
       field: 'id',
@@ -304,43 +337,16 @@ function SubTags(): JSX.Element {
     <>
       <Row>
         <div>
-          <div className={`${styles.btnsContainer} gap-4 flex-wrap`}>
-            <SearchBar
-              placeholder={tCommon('searchByName')}
-              onSearch={(term) => setTagSearchName(term.trim())}
-              inputTestId="searchByName"
-              buttonTestId="searchBtn"
-            />
-
-            <SortingButton
-              sortingOptions={[
-                { label: tCommon('Latest'), value: 'DESCENDING' },
-                { label: tCommon('Oldest'), value: 'ASCENDING' },
-              ]}
-              selectedOption={tagSortOrder}
-              onSortChange={(value) => setTagSortOrder(value as SortedByType)}
-              dataTestIdPrefix="sortTags"
-              buttonLabel={tCommon('sort')}
-            />
-
-            <Button
-              onClick={() => redirectToManageTag(parentTagId as string)}
-              data-testid="manageCurrentTagBtn"
-              className={`${styles.createButton} mb-3`}
-            >
-              {`${t('manageTag')} ${subTagsData?.getChildTags.name}`}
-            </Button>
-
-            <Button
-              variant="success"
-              onClick={showAddSubTagModal}
-              data-testid="addSubTagBtn"
-              className={`${styles.createButton} mb-3`}
-            >
-              <i className={'fa fa-plus me-2'} />
-              {t('addChildTag')}
-            </Button>
-          </div>
+          <AdminSearchFilterBar
+            searchPlaceholder={tCommon('searchByName')}
+            searchValue={tagSearchName}
+            onSearchChange={(value) => setTagSearchName(value.trim())}
+            searchInputTestId="searchByName"
+            searchButtonTestId="searchBtn"
+            hasDropdowns={true}
+            dropdowns={[sortDropdownConfig]}
+            additionalButtons={additionalActionButtons}
+          />
 
           {subTagsLoading || createUserTagLoading ? (
             <Loader />
@@ -408,7 +414,6 @@ function SubTags(): JSX.Element {
                     }}
                     sx={dataGridStyle}
                     getRowClassName={() => `${styles.rowBackground}`}
-                    autoHeight
                     rowHeight={65}
                     rows={subTagsList?.map((subTag, index) => ({
                       id: index + 1,

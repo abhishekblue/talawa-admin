@@ -7,11 +7,10 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import styles from 'style/app-fixed.module.css';
-import SearchBar from 'subComponents/SearchBar';
 import PaginationList from 'components/Pagination/PaginationList/PaginationList';
 import PluginModal from './PluginModal';
 import UploadPluginModal from './UploadPluginModal';
-import SortingButton from 'subComponents/SortingButton';
+import AdminSearchFilterBar from 'components/AdminSearchFilterBar/AdminSearchFilterBar';
 import { PluginList, UninstallConfirmationModal } from './components';
 import { usePluginActions, usePluginFilters } from './hooks';
 import { useGetAllPlugins } from 'plugin/graphql-service';
@@ -109,49 +108,48 @@ export default function PluginStore() {
     window.location.reload();
   };
 
+  const pluginStoreDropdowns = [
+    {
+      label: 'Filter plugins',
+      type: 'filter' as const,
+      options: [
+        { label: t('allPlugins'), value: 'all' },
+        { label: t('installedPlugins'), value: 'installed' },
+      ],
+      selectedOption: filterState.selectedOption,
+      onOptionChange: handleFilterChange,
+      dataTestIdPrefix: 'filterPlugins',
+      dropdownTestId: 'filter',
+    },
+  ];
+
+  const uploadPluginButton = (
+    <Button
+      className={`${styles.dropdown} ${styles.createorgdropdown}`}
+      onClick={() => setShowUploadModal(true)}
+      data-testid="uploadPluginBtn"
+    >
+      <i className={'fa fa-plus me-2'} />
+      Upload Plugin
+    </Button>
+  );
+
   return (
     <div
       className={styles.pageContent}
       style={{ paddingRight: 24 }}
       data-testid="plugin-store-page"
     >
-      <div
-        className={styles.btnsContainerSearchBar}
-        data-testid="plugin-store-searchbar"
-      >
-        <SearchBar
-          placeholder={t('searchPlaceholder')}
-          onSearch={debouncedSearch}
-          onChange={debouncedSearch}
-          inputTestId="searchPlugins"
-          buttonTestId="searchPluginsBtn"
-        />
-        <div
-          className={styles.btnsBlockSearchBar}
-          data-testid="plugin-store-filters"
-        >
-          <SortingButton
-            title="Filter plugins"
-            sortingOptions={[
-              { label: t('allPlugins'), value: 'all' },
-              { label: t('installedPlugins'), value: 'installed' },
-            ]}
-            selectedOption={filterState.selectedOption}
-            onSortChange={handleFilterChange}
-            dataTestIdPrefix="filterPlugins"
-            dropdownTestId="filter"
-            type="filter"
-          />
-          <Button
-            className={`${styles.dropdown} ${styles.createorgdropdown}`}
-            onClick={() => setShowUploadModal(true)}
-            data-testid="uploadPluginBtn"
-          >
-            <i className={'fa fa-plus me-2'} />
-            Upload Plugin
-          </Button>
-        </div>
-      </div>
+      <AdminSearchFilterBar
+        searchPlaceholder={t('searchPlaceholder')}
+        searchValue={searchTerm}
+        onSearchChange={debouncedSearch}
+        searchInputTestId="searchPlugins"
+        searchButtonTestId="searchPluginsBtn"
+        hasDropdowns={true}
+        dropdowns={pluginStoreDropdowns}
+        additionalButtons={uploadPluginButton}
+      />
       <div style={{ marginTop: 24 }}>
         <PluginList
           plugins={paginatedPlugins}

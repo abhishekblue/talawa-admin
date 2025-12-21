@@ -101,5 +101,9 @@
   "searchBy": "Search by {{item}}",
   "plugins": "Plugins",
   "save": "Save",
-  "saving": "Saving..."
+  "saving": "Saving...",
+  "toggleOptions": "Toggle options",
+  "filterAndSortOptions": "Filter and sort options",
+  "clear": "Clear",
+  "noResultsFound": "No results found"
 }
